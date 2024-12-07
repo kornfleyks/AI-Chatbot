@@ -13,18 +13,19 @@ const theme = extendTheme({
 
 
 function App() {
-  useEffect(() => {
-    // Create and add the script element
-    const script = document.createElement('script');
-    script.src = 'https://kornfleyks.github.io/AI-Chatbot/widget.js';
-    script.setAttribute('auto-init', 'true');
-    document.body.appendChild(script);
+  
+  // useEffect(() => {
+  //   // Create and add the script element
+  //   const script = document.createElement('script');
+  //   script.src = 'https://kornfleyks.github.io/AI-Chatbot/widget.js';
+  //   script.setAttribute('auto-init', 'true');
+  //   document.body.appendChild(script);
 
-    // Cleanup function to remove the script when component unmounts
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []); // Empty dependency array means this runs once on mount
+  //   // Cleanup function to remove the script when component unmounts
+  //   return () => {
+  //     document.body.removeChild(script);
+  //   };
+  // }, []); // Empty dependency array means this runs once on mount
 
   return (
     <ChakraProvider theme={theme}>
@@ -38,7 +39,7 @@ function App() {
             </Text>
           </VStack>
         </Container>
-        {/* <ChatBubble /> */}
+        <ChatBubble />
       </Box>
     </ChakraProvider>
   );
