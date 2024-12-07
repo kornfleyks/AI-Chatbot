@@ -2,7 +2,7 @@
   "name": "ai-chabot",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://kornfleyks.github.io/ai-chabot",
+  "homepage": "https://kornfleyks.github.io/AI-Chatbot",
   "dependencies": {
     "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^2.8.2",
