@@ -26,6 +26,9 @@ import {
   FaPaperclip,
 } from 'react-icons/fa';
 
+const API_KEY = process.env.REACT_APP_CHATBASE_API_KEY;
+const CHATBOT_ID = process.env.REACT_APP_CHATBOT_ID;
+
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -67,7 +70,7 @@ const ChatBubble = () => {
       const response = await fetch('https://www.chatbase.co/api/v1/chat', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.REACT_APP_CHATBASE_API_KEY}`,
+          'Authorization': `Bearer ${API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -75,7 +78,7 @@ const ChatBubble = () => {
             content: msg.content,
             role: msg.role,
           })),
-          chatbotId: process.env.REACT_APP_CHATBOT_ID,
+          chatbotId: CHATBOT_ID,
           stream: false,
           model: 'gpt-3.5-turbo',
           temperature: 0.7,
@@ -87,6 +90,7 @@ const ChatBubble = () => {
       const data = await response.json();
       setMessages((prev) => [...prev, { role: 'assistant', content: data.text }]);
     } catch (error) {
+      console.error(error);
       toast({
         title: 'Error',
         description: 'Failed to send message. Please try again.',
