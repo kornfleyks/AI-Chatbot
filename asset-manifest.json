@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ai-chabot/static/css/main.e6c13ad2.css",
+    "main.js": "/ai-chabot/static/js/main.c279e6da.js",
+    "static/js/488.cb9de0bc.chunk.js": "/ai-chabot/static/js/488.cb9de0bc.chunk.js",
+    "index.html": "/ai-chabot/index.html",
+    "main.e6c13ad2.css.map": "/ai-chabot/static/css/main.e6c13ad2.css.map",
+    "main.c279e6da.js.map": "/ai-chabot/static/js/main.c279e6da.js.map",
+    "488.cb9de0bc.chunk.js.map": "/ai-chabot/static/js/488.cb9de0bc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.c279e6da.js"
+  ]
+}
