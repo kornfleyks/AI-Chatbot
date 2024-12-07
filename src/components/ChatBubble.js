@@ -16,23 +16,35 @@ import {
   useColorModeValue,
   ChakraProvider,
 } from '@chakra-ui/react';
-import { FaComments, FaPaperPlane, FaTimes, FaEllipsisV, FaSun, FaMoon, FaPaperclip } from 'react-icons/fa';
+import {
+  FaComments,
+  FaPaperPlane,
+  FaTimes,
+  FaEllipsisV,
+  FaSun,
+  FaMoon,
+  FaPaperclip,
+} from 'react-icons/fa';
 
 const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  
+
   const { colorMode, toggleColorMode } = useColorMode();
-  
+
   const bg = useColorModeValue('white', 'gray.800');
   const text = useColorModeValue('gray.800', 'white');
   const border = useColorModeValue('gray.200', 'gray.600');
   const messageBg = useColorModeValue('gray.100', 'gray.700');
   const iconColor = useColorModeValue('gray.600', 'white');
   const inputBg = useColorModeValue('white', 'whiteAlpha.100');
-  
+  const hoverBg = useColorModeValue('gray.100', 'whiteAlpha.200');
+  const bubbleBg = useColorModeValue('blue.500', 'blue.200');
+  const bubbleHoverBg = useColorModeValue('blue.600', 'blue.300');
+  const bubbleColor = useColorModeValue('white', 'gray.800');
+
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const toast = useToast();
@@ -47,7 +59,7 @@ const ChatBubble = () => {
     if (!input.trim() || isTyping) return;
 
     const userMessage = { role: 'user', content: input.trim() };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setIsTyping(true);
 
@@ -59,7 +71,7 @@ const ChatBubble = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: messages.concat(userMessage).map(msg => ({
+          messages: messages.concat(userMessage).map((msg) => ({
             content: msg.content,
             role: msg.role,
           })),
@@ -73,7 +85,7 @@ const ChatBubble = () => {
       if (!response.ok) throw new Error('Failed to get response');
 
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.text }]);
+      setMessages((prev) => [...prev, { role: 'assistant', content: data.text }]);
     } catch (error) {
       toast({
         title: 'Error',
@@ -82,7 +94,7 @@ const ChatBubble = () => {
         duration: 3000,
         isClosable: true,
       });
-      setMessages(prev => prev.slice(0, -1));
+      setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsTyping(false);
     }
@@ -98,7 +110,7 @@ const ChatBubble = () => {
   const handleFileChange = useCallback((event) => {
     const file = event.target.files?.[0];
     if (file) {
-      setInput(prev => `${prev} [File: ${file.name}]`);
+      setInput((prev) => `${prev} [File: ${file.name}]`);
       toast({
         title: 'File Attached',
         description: `Selected file: ${file.name}`,
@@ -116,9 +128,12 @@ const ChatBubble = () => {
   return (
     <ChakraProvider>
       <Box position="fixed" bottom="20px" right="20px" zIndex={1000}>
-        <SlideFade in={isOpen} offsetY="20px">
+        <SlideFade
+          in={isOpen}
+          offsetY={0}
+          transition={{ enter: { duration: 0.2 } }}
+        >
           <Box
-            display={isOpen ? 'flex' : 'none'}
             position="fixed"
             bottom="80px"
             right="20px"
@@ -129,6 +144,10 @@ const ChatBubble = () => {
             borderRadius="lg"
             overflow="hidden"
             flexDirection="column"
+            display={isOpen ? 'flex' : 'none'}
+            opacity={isOpen ? 1 : 0}
+            transform={`translate3d(0, ${isOpen ? '0' : '20px'}, 0)`}
+            transition="all 0.2s ease-in-out"
           >
             {/* Header */}
             <Flex
@@ -151,6 +170,7 @@ const ChatBubble = () => {
                   onClick={toggleColorMode}
                   aria-label="Toggle theme"
                   color={iconColor}
+                  _hover={{ bg: hoverBg }}
                 />
                 <Menu>
                   <MenuButton
@@ -160,15 +180,22 @@ const ChatBubble = () => {
                     size="sm"
                     aria-label="Menu"
                     color={iconColor}
+                    _hover={{ bg: hoverBg }}
                   />
                   <MenuList bg={bg}>
-                    <MenuItem icon={<FaComments />} onClick={() => window.open('https://chatbase.co', '_blank')}>
+                    <MenuItem
+                      icon={<FaComments />}
+                      onClick={() => window.open('https://chatbase.co', '_blank')}
+                    >
                       Visit Chatbase
                     </MenuItem>
                     <MenuItem icon={<FaPaperclip />} onClick={() => fileInputRef.current.click()}>
                       Attach File
                     </MenuItem>
-                    <MenuItem icon={colorMode === 'light' ? <FaMoon /> : <FaSun />} onClick={toggleColorMode}>
+                    <MenuItem
+                      icon={colorMode === 'light' ? <FaMoon /> : <FaSun />}
+                      onClick={toggleColorMode}
+                    >
                       Toggle Theme
                     </MenuItem>
                     <MenuItem icon={<FaTimes />} onClick={() => {
@@ -186,6 +213,7 @@ const ChatBubble = () => {
                   onClick={() => setIsOpen(false)}
                   aria-label="Close chat"
                   color={iconColor}
+                  _hover={{ bg: hoverBg }}
                 />
               </Flex>
             </Flex>
@@ -206,21 +234,83 @@ const ChatBubble = () => {
                   bg={message.role === 'user' ? 'blue.500' : messageBg}
                   color={message.role === 'user' ? 'white' : text}
                   px={4}
+                  py={1.5}
+                  borderRadius="lg"
+                  maxW="80%"
+                  my={1}
+                >
+                  <Text fontSize="sm">{message.content}</Text>
+                </Box>
+              ))}
+              {isTyping && (
+                <Box
+                  alignSelf="flex-start"
+                  bg={messageBg}
+                  color={text}
+                  px={4}
                   py={2}
                   borderRadius="lg"
                   maxW="80%"
                   my={1}
                 >
-                  <Text>{message.content}</Text>
+                  <Flex gap={1} alignItems="center">
+                    <Box
+                      as="span"
+                      w="3px"
+                      h="3px"
+                      borderRadius="full"
+                      bg={text}
+                      animation="typing 1.4s infinite"
+                      sx={{
+                        '@keyframes typing': {
+                          '0%': { opacity: 0.2 },
+                          '20%': { opacity: 1 },
+                          '100%': { opacity: 0.2 }
+                        }
+                      }}
+                    />
+                    <Box
+                      as="span"
+                      w="3px"
+                      h="3px"
+                      borderRadius="full"
+                      bg={text}
+                      animation="typing 1.4s infinite"
+                      sx={{
+                        '@keyframes typing': {
+                          '0%': { opacity: 0.2 },
+                          '20%': { opacity: 1 },
+                          '100%': { opacity: 0.2 }
+                        }
+                      }}
+                      style={{ animationDelay: '0.2s' }}
+                    />
+                    <Box
+                      as="span"
+                      w="3px"
+                      h="3px"
+                      borderRadius="full"
+                      bg={text}
+                      animation="typing 1.4s infinite"
+                      sx={{
+                        '@keyframes typing': {
+                          '0%': { opacity: 0.2 },
+                          '20%': { opacity: 1 },
+                          '100%': { opacity: 0.2 }
+                        }
+                      }}
+                      style={{ animationDelay: '0.4s' }}
+                    />
+                  </Flex>
                 </Box>
-              ))}
+              )}
               <div ref={messagesEndRef} />
             </VStack>
 
             {/* Input */}
             <Flex
               px={3}
-              py={2}
+              py={4}
               borderTop="1px"
               borderColor={border}
               bg={bg}
@@ -248,11 +338,11 @@ const ChatBubble = () => {
               <IconButton
                 icon={<FaPaperclip />}
                 variant="ghost"
-                size="sm"
                 onClick={handleFileClick}
                 mr={2}
                 color={iconColor}
                 aria-label="Attach file"
+                _hover={{ bg: hoverBg }}
               />
               <IconButton
                 icon={<FaPaperPlane />}
@@ -260,6 +350,7 @@ const ChatBubble = () => {
                 isLoading={isTyping}
                 color={iconColor}
                 variant="ghost"
+                _hover={{ bg: hoverBg }}
               />
             </Flex>
           </Box>
@@ -269,13 +360,16 @@ const ChatBubble = () => {
           icon={<FaComments />}
           isRound
           size="lg"
-          colorScheme="blue"
+          bg={bubbleBg}
+          color={bubbleColor}
           onClick={() => setIsOpen(!isOpen)}
           boxShadow="lg"
           _hover={{
             transform: 'scale(1.1)',
+            bg: bubbleHoverBg,
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
           }}
-          transition="all 0.2s"
+          transition="all 0.3s ease"
         />
       </Box>
     </ChakraProvider>
