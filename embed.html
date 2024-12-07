@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBubble Embed</title>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@chakra-ui/react@1.8.8/dist/chakra-ui-react.production.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@chakra-ui/react@1.8.8/dist/chakra-ui-react.min.css">
+    <style>
+        #chatbubble-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatbubble-container"></div>
+    <script>
+        // This script will be used to load your ChatBubble component
+        (function(w,d,s,o,f,js,fjs){
+            w['ChatBubbleWidget']=o;w[o] = w[o] || function(){
+                (w[o].q = w[o].q || []).push(arguments)
+            };
+            js = d.createElement(s), fjs = d.getElementsByTagName(s)[0];
+            js.id = o; js.src = f; js.async = 1; fjs.parentNode.insertBefore(js, fjs);
+        }(window, document, 'script', 'ChatBubble', 'https://kornfleyks.github.io/AI-Chatbot/chatbubble.js'));
+    </script>
+</body>
+</html>
